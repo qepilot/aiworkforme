@@ -1,0 +1,16 @@
+# AI Work For Me
+
+> AI Work For Me is a SaaS tool that connects Jira, Notion, Slack, WhatsApp, and GitHub to a private retrieval-augmented generation (RAG) system built from a user's own docs, code, and boards. Users bring their own AI model API keys (OpenAI, Anthropic, or any provider) — AI Work For Me never proxies or marks up model calls.
+
+Key facts:
+- Free to create an account, no credit card required.
+- Users connect their own tools via API keys/tokens — no shared accounts, nothing leaves their workspace.
+- Users bring their own model provider keys and pay that provider directly.
+- Data (repos, PDFs, screenshots, wiki docs) is indexed into a private knowledge base scoped to a single account.
+- Currently supported integrations: Jira, Notion, Slack, WhatsApp, GitHub.
+
+## Pages
+
+- [Homepage](https://aiworkforme.com/): product overview, how it works, integrations, FAQ.
+- [Sign up](https://aiworkforme.com/sign-up): create a free account.
+- [Sign in](https://aiworkforme.com/sign-in): access an existing account.

@@ -16,10 +16,59 @@ const fredoka = Fredoka({
   weight: ["500", "600", "700"],
 });
 
+const title = "AI Work For Me — Your tools, your data, your own RAG";
+const description =
+  "AI Work For Me connects Jira, Notion, Slack, WhatsApp, and GitHub to a private RAG built from your own docs, code, and boards — powered by the AI models you choose.";
+
 export const metadata: Metadata = {
-  title: "AI Work For Me — Your tools, your data, your own RAG",
-  description:
-    "AI Work For Me connects Jira, Notion, Slack, WhatsApp, and GitHub to a private RAG built from your own docs, code, and boards — powered by the AI models you choose.",
+  metadataBase: new URL("https://aiworkforme.com"),
+  title,
+  description,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title,
+    description,
+    url: "/",
+    siteName: "AI Work For Me",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
+};
+
+const organizationAndSoftwareJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://aiworkforme.com/#organization",
+      name: "AI Work For Me",
+      url: "https://aiworkforme.com",
+      logo: "https://aiworkforme.com/favicon.ico",
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: "AI Work For Me",
+      url: "https://aiworkforme.com",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+      description:
+        "Connects Jira, Notion, Slack, WhatsApp, and GitHub to a private RAG built from your own docs, code, and boards — powered by the AI models you choose.",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      },
+      publisher: {
+        "@id": "https://aiworkforme.com/#organization",
+      },
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -33,6 +82,10 @@ export default function RootLayout({
       className={`${inter.variable} ${fredoka.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bg text-text">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationAndSoftwareJsonLd) }}
+        />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
