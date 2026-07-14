@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Work For Me
+
+aiworkforme.com — connect Jira, Notion, Slack, WhatsApp, and GitHub, bring your own model keys, and build a private RAG from your own docs, repos, and boards.
+
+This is a [Next.js](https://nextjs.org) project using Supabase for auth/DB and pgvector for the RAG index.
 
 ## Getting Started
 
-First, run the development server:
+1. Create a Supabase project, copy the URL and anon key into `.env.local` (see `.env.local.example`).
+2. Run the SQL in `supabase/migrations/0001_integrations_and_sources.sql` against your project (SQL Editor or `supabase db push`).
+3. Generate an encryption key for stored integration credentials: `openssl rand -base64 32`, and set it as `ENCRYPTION_KEY` in `.env.local`.
+4. Install dependencies and run the dev server:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/dashboard` — account overview
+- `/dashboard/integrations` — connect Jira, Notion, Slack, WhatsApp, GitHub, and model provider keys
+- `/dashboard/sources` — build your RAG: connect a GitHub repo, upload PDFs/images, or add wiki/doc links
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Integration credentials are encrypted (AES-256-GCM) before being stored, and Supabase Row Level Security scopes every table and storage object to the owning user.
