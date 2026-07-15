@@ -22,6 +22,7 @@ export default function CTA() {
         </p>
         <Link
           href="/sign-up"
+          data-analytics-event="cta_section_sign_up_click"
           className="mt-8 inline-block rounded-full bg-white px-8 py-3.5 text-sm font-medium text-ink transition-transform hover:scale-105 active:scale-95"
         >
           Create your account

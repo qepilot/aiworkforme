@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, Fredoka } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AnalyticsListener from "@/components/AnalyticsListener";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -71,6 +73,8 @@ const organizationAndSoftwareJsonLd = {
   ],
 };
 
+const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -89,6 +93,8 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        <AnalyticsListener />
+        {gaMeasurementId && <GoogleAnalytics gaId={gaMeasurementId} />}
       </body>
     </html>
   );

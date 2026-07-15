@@ -27,7 +27,12 @@ export default async function Navbar() {
         <ul className="hidden md:flex items-center gap-8 text-sm font-medium text-text">
           {links.map((link) => (
             <li key={link.label}>
-              <a href={link.href} className="transition-colors hover:text-ink">
+              <a
+                href={link.href}
+                data-analytics-event="nav_link_click"
+                data-analytics-label={link.label}
+                className="transition-colors hover:text-ink"
+              >
                 {link.label}
               </a>
             </li>
@@ -39,6 +44,7 @@ export default async function Navbar() {
             <>
               <Link
                 href="/dashboard"
+                data-analytics-event="nav_dashboard_click"
                 className="hidden sm:inline-block rounded-full px-4 py-2.5 text-sm font-medium text-text transition-colors hover:text-ink"
               >
                 Dashboard
@@ -49,12 +55,14 @@ export default async function Navbar() {
             <>
               <Link
                 href="/sign-in"
+                data-analytics-event="nav_sign_in_click"
                 className="hidden sm:inline-block rounded-full px-4 py-2.5 text-sm font-medium text-text transition-colors hover:text-ink"
               >
                 Sign in
               </Link>
               <Link
                 href="/sign-up"
+                data-analytics-event="nav_sign_up_click"
                 className="rounded-full bg-ink text-white text-sm font-medium px-5 py-2.5 transition-transform hover:scale-105 active:scale-95"
               >
                 Sign up

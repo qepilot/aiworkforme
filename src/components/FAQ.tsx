@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { trackEvent } from '@/lib/analytics'
 
 const faqs = [
   {
@@ -55,7 +56,13 @@ export default function FAQ() {
             return (
               <div key={faq.q} className="py-5">
                 <button
-                  onClick={() => setOpen(isOpen ? null : i)}
+                  onClick={() => {
+                    const next = isOpen ? null : i
+                    setOpen(next)
+                    if (next !== null) {
+                      trackEvent('faq_toggle', { question: faq.q })
+                    }
+                  }}
                   className="flex w-full items-center justify-between text-left"
                 >
                   <span

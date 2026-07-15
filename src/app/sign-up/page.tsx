@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
+import { trackEvent } from '@/lib/analytics'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('')
@@ -27,6 +28,7 @@ export default function SignUpPage() {
     }
 
     setSubmitting(true)
+    trackEvent('sign_up_attempt')
     try {
       const supabase = createClient()
       const { error: signUpError } = await supabase.auth.signUp({
@@ -37,8 +39,10 @@ export default function SignUpPage() {
         },
       })
       if (signUpError) throw signUpError
+      trackEvent('sign_up', { method: 'password' })
       setSubmitted(true)
     } catch (err) {
+      trackEvent('sign_up_error')
       setError(err instanceof Error ? err.message : 'Could not create your account.')
     } finally {
       setSubmitting(false)

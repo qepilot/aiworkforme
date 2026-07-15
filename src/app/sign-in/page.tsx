@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
+import { trackEvent } from '@/lib/analytics'
 
 function SignInForm() {
   const router = useRouter()
@@ -20,13 +21,16 @@ function SignInForm() {
     e.preventDefault()
     setError('')
     setSubmitting(true)
+    trackEvent('sign_in_attempt')
     try {
       const supabase = createClient()
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
       if (signInError) throw signInError
+      trackEvent('login', { method: 'password' })
       router.push(next)
       router.refresh()
     } catch (err) {
+      trackEvent('sign_in_error')
       setError(err instanceof Error ? err.message : 'Could not sign in.')
       setSubmitting(false)
     }

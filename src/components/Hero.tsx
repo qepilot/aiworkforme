@@ -48,12 +48,14 @@ export default function Hero() {
         <motion.div variants={item} className="mt-9 flex items-center justify-center gap-4">
           <Link
             href="/sign-up"
+            data-analytics-event="hero_sign_up_click"
             className="rounded-full bg-ink px-7 py-3.5 text-sm font-medium text-white transition-transform hover:scale-105 active:scale-95 shadow-lg shadow-black/20"
           >
             Create your account
           </Link>
           <Link
             href="/sign-in"
+            data-analytics-event="hero_sign_in_click"
             className="rounded-full border border-white/40 bg-white/10 px-7 py-3.5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
           >
             Sign in
