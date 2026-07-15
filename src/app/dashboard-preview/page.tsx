@@ -15,10 +15,10 @@ const setupSteps = [
     cta: 'Go to Data Sources',
   },
   {
-    title: 'Get a deep-read summary',
-    body: 'Once a Jira or Notion board is connected, pull a grounded summary of it here.',
-    href: undefined,
-    cta: 'Coming soon',
+    title: 'Ask your private AI',
+    body: 'Once a Jira or Notion board is connected, chat with a grounded assistant about it here.',
+    href: '/dashboard-preview/chat',
+    cta: 'Go to Chat',
   },
 ]
 

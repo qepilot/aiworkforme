@@ -7,6 +7,7 @@ export default function DashboardSidebar({ basePath = '/dashboard' }: { basePath
   const pathname = usePathname()
   const links = [
     { label: 'Overview', href: basePath },
+    { label: 'Chat', href: `${basePath}/chat` },
     { label: 'Integrations', href: `${basePath}/integrations` },
     { label: 'Data Sources', href: `${basePath}/sources` },
   ]

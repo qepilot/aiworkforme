@@ -12,3 +12,13 @@ export const PREVIEW_SOURCES = [
   { id: '3', type: 'pdf', name: 'q3-product-spec.pdf', status: 'pending' },
   { id: '4', type: 'png', name: 'onboarding-flow.png', status: 'error' },
 ] as const
+
+export const PREVIEW_MESSAGES = [
+  { id: '1', role: 'user', content: 'What changed in the last sprint according to Jira?' },
+  {
+    id: '2',
+    role: 'assistant',
+    content:
+      "Based on the connected Jira board, the last sprint closed 12 tickets, mostly around the onboarding flow. Two tickets (ONB-142, ONB-145) rolled over to this sprint — both are waiting on design review.",
+  },
+] as const
