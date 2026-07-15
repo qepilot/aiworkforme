@@ -6,6 +6,7 @@ import SignOutButton from './SignOutButton'
 const links = [
   { label: 'How it works', href: '/#workflow' },
   { label: 'Integrations', href: '/#capabilities' },
+  { label: 'Blog', href: '/blog' },
   { label: 'FAQ', href: '/#faq' },
 ]
 

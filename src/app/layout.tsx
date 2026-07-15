@@ -19,7 +19,7 @@ const fredoka = Fredoka({
   weight: ["500", "600", "700"],
 });
 
-const title = "AI Work For Me — Your tools, your data, your own RAG";
+const title = "AI Work For Me — Private AI Assistant with Your Own Tools & RAG";
 const description =
   "AI Work For Me connects Jira, Notion, Slack, WhatsApp, and GitHub to a private RAG built from your own docs, code, and boards — powered by the AI models you choose.";
 
