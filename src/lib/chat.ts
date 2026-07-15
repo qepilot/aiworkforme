@@ -1,17 +1,21 @@
 export type ChatRole = 'user' | 'assistant'
 export type ChatTurn = { role: ChatRole; content: string }
 
-const SYSTEM_PROMPT =
-  "You are the user's private AI assistant, grounded in the tools and documents they've connected. " +
-  'Answer plainly and say when you are unsure rather than guessing.'
+function buildSystemPrompt(context?: string): string {
+  const base =
+    "You are the user's private AI assistant, grounded in the tools and documents they've connected. " +
+    'Answer plainly and say when you are unsure rather than guessing.'
+  if (!context) return base
+  return `${base}\n\nRelevant context retrieved from the user's connected documents:\n${context}`
+}
 
-async function completeWithOpenAI(apiKey: string, history: ChatTurn[]): Promise<string> {
+async function completeWithOpenAI(apiKey: string, history: ChatTurn[], context?: string): Promise<string> {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
       model: 'gpt-4o-mini',
-      messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...history],
+      messages: [{ role: 'system', content: buildSystemPrompt(context) }, ...history],
     }),
   })
   if (!res.ok) throw new Error(`OpenAI request failed (${res.status})`)
@@ -21,7 +25,7 @@ async function completeWithOpenAI(apiKey: string, history: ChatTurn[]): Promise<
   return content
 }
 
-async function completeWithAnthropic(apiKey: string, history: ChatTurn[]): Promise<string> {
+async function completeWithAnthropic(apiKey: string, history: ChatTurn[], context?: string): Promise<string> {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -32,7 +36,7 @@ async function completeWithAnthropic(apiKey: string, history: ChatTurn[]): Promi
     body: JSON.stringify({
       model: 'claude-sonnet-4-5',
       max_tokens: 1024,
-      system: SYSTEM_PROMPT,
+      system: buildSystemPrompt(context),
       messages: history,
     }),
   })
@@ -47,6 +51,9 @@ export async function getChatCompletion(
   provider: 'openai' | 'anthropic',
   apiKey: string,
   history: ChatTurn[],
+  context?: string,
 ): Promise<string> {
-  return provider === 'anthropic' ? completeWithAnthropic(apiKey, history) : completeWithOpenAI(apiKey, history)
+  return provider === 'anthropic'
+    ? completeWithAnthropic(apiKey, history, context)
+    : completeWithOpenAI(apiKey, history, context)
 }

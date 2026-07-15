@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { ingestPdfSource } from '@/lib/ingest'
 
 async function requireUserId() {
   const supabase = await createClient()
@@ -11,8 +12,9 @@ async function requireUserId() {
   return { supabase, userId }
 }
 
-// Ingestion (chunking + embedding into document_chunks) isn't wired up yet —
-// sources are created in 'pending' status and stay there until a follow-up
+// PDF ingestion (chunking + embedding into document_chunks) runs inline
+// below. GitHub repos, wiki links, and image uploads still aren't wired up —
+// they're created in 'pending' status and stay there until a follow-up
 // processing pipeline picks them up.
 
 export async function addRepoSource(formData: FormData) {
@@ -64,14 +66,22 @@ export async function addFileSource(formData: FormData) {
   const { error: uploadError } = await supabase.storage.from('sources').upload(path, file)
   if (uploadError) throw new Error(uploadError.message)
 
-  const { error } = await supabase.from('data_sources').insert({
-    user_id: userId,
-    type,
-    name: file.name,
-    storage_path: path,
-    status: 'pending',
-  })
+  const { data: source, error } = await supabase
+    .from('data_sources')
+    .insert({
+      user_id: userId,
+      type,
+      name: file.name,
+      storage_path: path,
+      status: type === 'pdf' ? 'processing' : 'pending',
+    })
+    .select('id')
+    .single()
   if (error) throw new Error(error.message)
+
+  if (type === 'pdf') {
+    await ingestPdfSource(supabase, userId, source.id, path)
+  }
 
   revalidatePath('/dashboard/sources')
 }

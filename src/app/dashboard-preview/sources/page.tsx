@@ -29,6 +29,11 @@ export default function SourcesPreviewPage() {
         scoped to your account only.
       </p>
 
+      <p className="mt-4 rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+        <strong>New:</strong> PDF uploads are now automatically parsed, chunked, and embedded — grounding your
+        answers in Chat. GitHub repo, wiki link, and image ingestion are still on the way.
+      </p>
+
       <div className="mt-8">
         <AddSourceForm preview />
       </div>

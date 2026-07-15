@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { decrypt } from '@/lib/crypto'
 import { getChatCompletion, type ChatTurn } from '@/lib/chat'
+import { getEmbeddings } from '@/lib/embeddings'
 
 async function requireUserId() {
   const supabase = await createClient()
@@ -51,9 +52,36 @@ export async function sendChatMessage(formData: FormData) {
   const provider = modelIntegration.provider as 'openai' | 'anthropic'
   const apiKey = JSON.parse(decrypt(modelIntegration.credentials as string)).api_key as string
 
+  // Retrieval needs an OpenAI key specifically, for embeddings — independent
+  // of which provider is used for the chat completion above.
+  let context: string | undefined
+  const { data: openaiIntegration } = await supabase
+    .from('integrations')
+    .select('credentials')
+    .eq('user_id', userId)
+    .eq('provider', 'openai')
+    .maybeSingle()
+  if (openaiIntegration) {
+    try {
+      const embeddingApiKey = JSON.parse(decrypt(openaiIntegration.credentials as string)).api_key as string
+      const [queryEmbedding] = await getEmbeddings(embeddingApiKey, [content.trim()])
+      const { data: matches } = await supabase.rpc('match_document_chunks', {
+        query_embedding: queryEmbedding,
+        match_user_id: userId,
+        match_count: 5,
+      })
+      if (matches?.length) {
+        context = matches.map((m: { content: string }) => m.content).join('\n\n---\n\n')
+      }
+    } catch {
+      // Retrieval is best-effort — fall back to an ungrounded reply rather
+      // than failing the whole chat turn.
+    }
+  }
+
   let reply: string
   try {
-    reply = await getChatCompletion(provider, apiKey, history)
+    reply = await getChatCompletion(provider, apiKey, history, context)
   } catch (e) {
     reply = `Sorry, the request to ${provider} failed: ${e instanceof Error ? e.message : 'unknown error'}`
   }

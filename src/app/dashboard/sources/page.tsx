@@ -20,7 +20,7 @@ export default async function SourcesPage() {
   const supabase = await createClient()
   const { data: sources } = await supabase
     .from('data_sources')
-    .select('id, type, name, status, created_at')
+    .select('id, type, name, status, error_message, created_at')
     .order('created_at', { ascending: false })
 
   return (
@@ -34,6 +34,11 @@ export default async function SourcesPage() {
       <p className="mt-3 text-muted">
         Connect a repo, upload files, or add a link. Everything here is indexed into a private knowledge base
         scoped to your account only.
+      </p>
+
+      <p className="mt-4 rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+        <strong>New:</strong> PDF uploads are now automatically parsed, chunked, and embedded — grounding your
+        answers in Chat. GitHub repo, wiki link, and image ingestion are still on the way.
       </p>
 
       <div className="mt-8">
@@ -52,6 +57,9 @@ export default async function SourcesPage() {
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-ink">{source.name}</p>
                 <p className="mt-0.5 text-xs text-muted">{TYPE_LABELS[source.type] ?? source.type}</p>
+                {source.status === 'error' && source.error_message ? (
+                  <p className="mt-1 text-xs text-red-600">{source.error_message}</p>
+                ) : null}
               </div>
               <div className="flex shrink-0 items-center gap-3">
                 <span
