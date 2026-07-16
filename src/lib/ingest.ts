@@ -1,4 +1,3 @@
-import { PDFParse } from 'pdf-parse'
 import type { createClient } from '@/lib/supabase/server'
 import { decrypt } from '@/lib/crypto'
 import { getEmbeddings } from '@/lib/embeddings'
@@ -55,6 +54,11 @@ export async function ingestPdfSource(
   }
 
   try {
+    // Imported lazily (not at module top-level) so that if pdf-parse or its
+    // native dependencies fail to load in a given runtime, only this
+    // ingestion call errors out — it doesn't crash every route that
+    // transitively imports this file (e.g. the Data Sources page itself).
+    const { PDFParse } = await import('pdf-parse')
     const buffer = Buffer.from(await file.arrayBuffer())
     const parser = new PDFParse({ data: buffer })
     const { pages } = await parser.getText()
